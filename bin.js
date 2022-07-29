@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const Hyperbeam = require('./')
+const getPubKey = require('./ux.js')
 
 if (process.argv.includes('-h') || process.argv.includes('--help')) {
   console.error('Usage: hyperbeam [passphrase]')
@@ -11,8 +12,11 @@ if (process.argv.includes('-h') || process.argv.includes('--help')) {
 }
 
 let beam
+let pubKey = getPubKey(process.argv[2]);
+
 try {
-  beam = new Hyperbeam(process.argv[2], process.argv.includes('-r'))
+  beam = new Hyperbeam(pubKey, process.argv.includes('-r'))
+  pubKey = beam.key;
 } catch (e) {
   if (e.constructor.name === 'PassphraseError') {
     console.error(e.message)
@@ -24,7 +28,7 @@ try {
 }
 
 if (beam.announce) {
-  console.error('[hyperbeam] Run hyperbeam ' + beam.key + ' to connect')
+  console.error('[hyperbeam] Run hyperbeam ' + pubKey + ' to connect')
   console.error('[hyperbeam] To restart this side of the pipe with the same key add -r to the above')
 } else {
   console.error('[hyperbeam] Connecting pipe...')
