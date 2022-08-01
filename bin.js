@@ -59,7 +59,7 @@ function createBeam(key, options) {
       setTimeout(() => {
         closeASAP()
         beam = createBeam(safePubKey, true)
-      }, 2000);
+      }, 500);
 
     } else if (easyTopic && !process.argv.includes('-r')) {
       console.error('[hyperbeam] Waiting for safe pubKey from peer')
@@ -75,7 +75,7 @@ function createBeam(key, options) {
         setTimeout(() => {
           closeASAP()
           beam = createBeam(safePubKey, false)
-        }, 500);
+        }, 1500);
       })
     }
   })
