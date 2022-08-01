@@ -83,11 +83,11 @@ function createBeam(key, options) {
 
         setTimeout(() => {
           try {
-            _beam._destroy()
+            _beam._destroy(() => {
+              console.error('[hyperbeam] Creating new HyperBeam with safe pubKey: ', safePubKey)
+              safeBeam = createBeam(safePubKey, false)
+            })
           } catch (e) {}
-
-          console.error('[hyperbeam] Creating new HyperBeam with safe pubKey: ', safePubKey)
-          safeBeam = createBeam(safePubKey, false)
         }, 1000)
       })
     } else {
