@@ -63,7 +63,7 @@ function createBeam(key, options) {
         _beam && _beam._destroy( () => {
           safeBeam = createBeam(safePubKey, true)
         });
-      }, 500)
+      }, 200)
 
     } else if (easyTopic && !process.argv.includes('-r')) {
       easyTopic = false;
@@ -80,9 +80,10 @@ function createBeam(key, options) {
 
         setTimeout(() => {
           _beam && _beam._destroy( () => {
+            console.error('[hyperbeam] Creating new HyperBeam with safe pubKey: ', safePubKey)
             safeBeam = createBeam(safePubKey, false)
           });
-        }, 900)
+        }, 2000)
       })
     }
   })
