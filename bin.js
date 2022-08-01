@@ -58,8 +58,8 @@ function createBeam(key, options) {
       utils.sendMsg('key:' + safePubKey + '\n', _beam, process)
 
       setTimeout(() => {
-        _beam.destroy();
-      }, 5000)
+        _beam && _beam.destroy();
+      }, 1000)
 
       setTimeout(() => {
         easyTopic = false;
@@ -83,8 +83,8 @@ function createBeam(key, options) {
         }, 500)
 
         setTimeout(() => {
-          _beam.destroy()
-        }, 5000)
+          _beam && _beam.destroy();
+        }, 1000)
       })
     }
   })
