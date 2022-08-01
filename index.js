@@ -49,11 +49,11 @@ module.exports = class Hyperbeam extends Duplex {
     }
   }
 
-  _onreadDone (err) {
+  _onreadDone (err, res) {
     if (this._onread) {
       const cb = this._onread
       this._onread = null
-      cb(err)
+      cb(err, res)
     }
   }
 
@@ -137,7 +137,7 @@ module.exports = class Hyperbeam extends Duplex {
 
   _push (data) {
     const res = this.push(data)
-    queueTick(() => this._onreadDone(null))
+    queueTick(() => this._onreadDone(null, res))
     return res
   }
 

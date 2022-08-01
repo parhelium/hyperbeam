@@ -55,10 +55,9 @@ beam.on('connected', function () {
 
   } else if (easyTopic && !process.argv.includes('-r')) {
     console.error('[hyperbeam] Waiting for safe pubKey from peer')
-    // beam._read = function(data){
-      // console.error('[hyperbeam] onReadDone!', data)
-    // }
-    
+    beam._read = function(err, result){
+      console.error('[hyperbeam] onReadDone!', result)
+    }
   }
 })
 
