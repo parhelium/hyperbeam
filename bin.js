@@ -52,11 +52,9 @@ function createBeam(key, options) {
     console.error('[hyperbeam] Success! Encrypted tunnel established to remote peer')
     // if pubKey was generated from passphrase
     // send new random pubKey for safe communication channel and reconnect
-    if (easyTopic) {
-      easyTopic = false
-    }
-
     if (easyTopic && isServer) {
+      easyTopic = false
+
       const safePubKey = utils.toBase32(utils.randomBytes(32))
 
       console.error('[hyperbeam] Sending safe pubKey to remote peer!', safePubKey)
@@ -68,8 +66,9 @@ function createBeam(key, options) {
           console.error('[hyperbeam] Creating new HyperBeam with safe pubKey: ', safePubKey)
           safeBeam = createBeam(safePubKey, true)
         })
-      }, 200)
+      }, 500)
     } else if (easyTopic && !isServer) {
+      easyTopic = false
       console.error('[hyperbeam] Waiting for safe pubKey from peer')
 
       const rl = readline.createInterface({
