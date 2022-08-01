@@ -52,7 +52,7 @@ beam.on('connected', function () {
     utils.sendMsg('key:' + safePubKey, beam, process)
 
   } else if (easyTopic && !process.argv.includes('-r')) {
-    console.error('[hyperbeam] Waiting for safe pubKey from peer', data)
+    console.error('[hyperbeam] Waiting for safe pubKey from peer')
     beam._read((data) => {
       console.error('[hyperbeam] Received safe pubKey ->', data)
     })
