@@ -58,10 +58,11 @@ function createBeam(key, options) {
       utils.sendMsg('key:' + safePubKey + '\n', _beam, process)
 
       setTimeout(() => {
-        _beam.destroy()
+        _beam.destroy();
       }, 5000)
 
       setTimeout(() => {
+        easyTopic = false;
         safeBeam = createBeam(safePubKey, true)
       }, 200)
 
@@ -77,6 +78,7 @@ function createBeam(key, options) {
         console.error('[hyperbeam] Received safe pubKey: ', safePubKey)
 
         setTimeout(() => {
+          easyTopic = false;
           safeBeam = createBeam(safePubKey, false)
         }, 500)
 
