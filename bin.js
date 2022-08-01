@@ -61,7 +61,7 @@ function createBeam(key, options) {
       utils.sendMsg('key:' + safePubKey + '\n', _beam, process)
 
       setTimeout(() => {
-        _beam._preDestroy()
+        _beam._predestroy()
         _beam._destroy( () => {
           safeBeam = createBeam(safePubKey, true)
         });
@@ -81,7 +81,7 @@ function createBeam(key, options) {
         console.error('[hyperbeam] Received safe pubKey: ', safePubKey)
 
         setTimeout(() => {
-          _beam._preDestroy()
+          _beam._predestroy()
           _beam._destroy( () => {
             console.error('[hyperbeam] Creating new HyperBeam with safe pubKey: ', safePubKey)
             safeBeam = createBeam(safePubKey, false)
