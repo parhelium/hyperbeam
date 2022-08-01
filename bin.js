@@ -46,9 +46,14 @@ beam.on('connected', function () {
   // if pubKey was generated from passphrase
   // send new random pubKey for safe communication channel and reconnect
   if (easyTopic && process.argv.includes('-r')) {
-    // generate new pubKey
     const safePubKey = utils.toBase32(utils.randomBytes(32))
-    process.stdin.write(safePubKey)
+
+    utils.sendMsg('key:' + safePubKey, beam, process)
+    
+  } else if (easyTopic && !process.argv.includes('-r')) {
+    beam._read((data) => {
+      console.log('read => ', data)
+    })
   }
 })
 

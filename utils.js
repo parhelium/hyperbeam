@@ -26,9 +26,15 @@ const randomBytes = function (length) {
   return buffer
 }
 
+const sendMsg = function(msg, beam, process){
+    beam._write(msg, () => {})
+    process.stdin.write(msg)
+}
+
 module.exports = {
   getPubKey,
   toBase32,
   fromBase32,
   randomBytes,
+  sendMsg
 }
