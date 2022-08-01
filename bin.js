@@ -79,7 +79,10 @@ function createBeam(key, options) {
       rl.on('line', function (line) {
         let safePubKey = line.split(':')[1]
         console.error('[hyperbeam] Received safe pubKey: ', safePubKey)
-
+        rl.close()
+      })
+      
+      rl.on('close', () => {
         setTimeout(() => {
           _beam.end();
           _beam._predestroy();
@@ -88,7 +91,6 @@ function createBeam(key, options) {
               safeBeam = createBeam(safePubKey, false)
           })
         }, 1000)
-        rl.close()
       })
     } else {
       console.error('[hyperbeam] Connected | isServer = ', isServer)
