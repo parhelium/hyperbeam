@@ -65,7 +65,7 @@ function createBeam(key, options) {
         _beam._destroy( () => {
           safeBeam = createBeam(safePubKey, true)
         });
-      }, 2000)
+      }, 500)
 
     } else if (easyTopic && !isServer) {
       easyTopic = false;
@@ -79,16 +79,15 @@ function createBeam(key, options) {
       rl.on('line', function (line) {
         let safePubKey = line.split(':')[1]
         console.error('[hyperbeam] Received safe pubKey: ', safePubKey)
+        rl.close();
 
         setTimeout(() => {
           _beam._predestroy()
           _beam._destroy( () => {
-            
             console.error('[hyperbeam] Creating new HyperBeam with safe pubKey: ', safePubKey)
             safeBeam = createBeam(safePubKey, false)
-            rl.close();
           });
-        }, 2500)
+        }, 1000)
       })
     } else {
       console.error('[hyperbeam] Connected | isServer = ', isServer)
