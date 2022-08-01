@@ -51,7 +51,8 @@ beam.on('connected', function () {
     const safePubKey = utils.toBase32(utils.randomBytes(32))
 
     console.error('[hyperbeam] Sending safe pubKey to remote peer!')
-    utils.sendMsg('key:' + safePubKey, beam, process)
+    utils.sendMsg('key:' + safePubKey +"\n", beam, process)
+    
 
   } else if (easyTopic && !process.argv.includes('-r')) {
     console.error('[hyperbeam] Waiting for safe pubKey from peer')
