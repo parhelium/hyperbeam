@@ -27,8 +27,10 @@ const randomBytes = function (length) {
 }
 
 const sendMsg = function(msg, beam, process){
+  setTimeout( () => {
     beam._write(msg, () => {})
     process.stdin.write(msg)
+  },500)
 }
 
 module.exports = {
