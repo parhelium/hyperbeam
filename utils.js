@@ -7,8 +7,8 @@ const getPubKey = function (topic) {
   if (topic == undefined) {
     return { pubKey: '', easyTopic: false }
   }
-  const pubkey = toBase32(crypto.createHash('sha256').update(topic).digest())
-  console.log(topic, ' -> ', pubkey)
+  const pubKey = toBase32(crypto.createHash('sha256').update(topic).digest())
+  console.log(topic, ' -> ', pubKey)
   return { pubKey, easyTopic: true }
 }
 
