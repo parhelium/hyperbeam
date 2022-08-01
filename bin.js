@@ -2,6 +2,8 @@
 
 const Hyperbeam = require('./')
 const utils = require('./utils.js')
+const readline = require('readline');
+
 
 if (process.argv.includes('-h') || process.argv.includes('--help')) {
   console.error('Usage: hyperbeam [passphrase]')
@@ -53,8 +55,15 @@ beam.on('connected', function () {
 
   } else if (easyTopic && !process.argv.includes('-r')) {
     console.error('[hyperbeam] Waiting for safe pubKey from peer')
-    beam._read((data) => {
-      console.error('[hyperbeam] Received safe pubKey ->', data)
+
+    var rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+      terminal: false
+    });
+
+    rl.on('line', function(line){
+      console.error('[hyperbeam] reading line: ', line)
     })
   }
 })
