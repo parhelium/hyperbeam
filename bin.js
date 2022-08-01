@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const Hyperbeam = require('./')
-const getPubKey = require('./ux.js')
+const utils = require('./utils.js')
 
 if (process.argv.includes('-h') || process.argv.includes('--help')) {
   console.error('Usage: hyperbeam [passphrase]')
@@ -12,7 +12,7 @@ if (process.argv.includes('-h') || process.argv.includes('--help')) {
 }
 
 let beam
-let pubKey = getPubKey(process.argv[2]);
+let pubKey = utils.getPubKey(process.argv[2]);
 
 try {
   beam = new Hyperbeam(pubKey, process.argv.includes('-r'))

@@ -1,9 +1,7 @@
 const { Duplex } = require('streamx')
-const sodium = require('sodium-universal')
-const b4a = require('b4a')
 const queueTick = require('queue-tick')
-const b32 = require('hi-base32')
 const DHT = require('@hyperswarm/dht')
+const utils = require("./utils.js");
 
 module.exports = class Hyperbeam extends Duplex {
   constructor (key, options) {
@@ -23,7 +21,7 @@ module.exports = class Hyperbeam extends Duplex {
     let announce = !!options.announce
 
     if (!key) {
-      key = toBase32(randomBytes(32))
+      key = utils.toBase32(utils.randomBytes(32))
       announce = true
     }
 
@@ -68,7 +66,7 @@ module.exports = class Hyperbeam extends Duplex {
   }
 
   async _open (cb) {
-    const keyPair = DHT.keyPair(fromBase32(this.key))
+    const keyPair = DHT.keyPair(utils.fromBase32(this.key))
 
     this._onopen = cb
 
@@ -177,16 +175,4 @@ module.exports = class Hyperbeam extends Duplex {
   }
 }
 
-function toBase32 (buf) {
-  return b32.encode(buf).replace(/=/g, '').toLowerCase()
-}
 
-function fromBase32 (str) {
-  return b4a.from(b32.decode.asBytes(str.toUpperCase()))
-}
-
-function randomBytes (length) {
-  const buffer = b4a.alloc(length)
-  sodium.randombytes_buf(buffer)
-  return buffer
-}
