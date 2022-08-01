@@ -62,7 +62,7 @@ beam.on('connected', function () {
     });
 
     rl.on('line', function(line){
-      console.error('[hyperbeam] reading line: ', line)
+      console.error('[hyperbeam] Received safe pubKey: ', line.split(":")[1])
     })
   }
 })
