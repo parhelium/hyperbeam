@@ -52,6 +52,8 @@ function createBeam(key, options) {
     // if pubKey was generated from passphrase
     // send new random pubKey for safe communication channel and reconnect
     if (easyTopic && process.argv.includes('-r')) {
+      easyTopic = false;
+
       const safePubKey = utils.toBase32(utils.randomBytes(32))
 
       console.error('[hyperbeam] Sending safe pubKey to remote peer!')
@@ -62,11 +64,12 @@ function createBeam(key, options) {
       }, 1000)
 
       setTimeout(() => {
-        easyTopic = false;
         safeBeam = createBeam(safePubKey, true)
       }, 200)
 
     } else if (easyTopic && !process.argv.includes('-r')) {
+      easyTopic = false;
+
       console.error('[hyperbeam] Waiting for safe pubKey from peer')
 
       const rl = readline.createInterface({
@@ -78,7 +81,6 @@ function createBeam(key, options) {
         console.error('[hyperbeam] Received safe pubKey: ', safePubKey)
 
         setTimeout(() => {
-          easyTopic = false;
           safeBeam = createBeam(safePubKey, false)
         }, 500)
 
