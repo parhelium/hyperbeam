@@ -58,9 +58,7 @@ function createBeam(key, options) {
       utils.sendMsg('key:' + safePubKey + '\n', _beam, process)
 
       setTimeout(() => {
-        _beam.end()
         _beam.destroy()
-        _beam.on('close', function () {})
       }, 5000)
 
       setTimeout(() => {
@@ -83,9 +81,7 @@ function createBeam(key, options) {
         }, 500)
 
         setTimeout(() => {
-          _beam.end()
           _beam.destroy()
-          _beam.on('close', function () {})
         }, 5000)
       })
     }
@@ -109,12 +105,12 @@ function createBeam(key, options) {
   return _beam
 }
 
-function closeASAP() {
+function closeASAP(_beam) {
   console.error('[hyperbeam] Shutting down beam...')
 
   const timeout = setTimeout(() => process.exit(1), 2000)
-  beam.destroy()
-  beam.on('close', function () {
+  _beam.destroy()
+  _beam.on('close', function () {
     clearTimeout(timeout)
   })
 }
