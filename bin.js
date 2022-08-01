@@ -65,7 +65,7 @@ function createBeam(key, options) {
         _beam._destroy( () => {
           safeBeam = createBeam(safePubKey, true)
         });
-      }, 200)
+      }, 2000)
 
     } else if (easyTopic && !isServer) {
       easyTopic = false;
