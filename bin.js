@@ -57,12 +57,13 @@ function createBeam(key, options) {
 
       const safePubKey = utils.toBase32(utils.randomBytes(32))
 
-      console.error('[hyperbeam] Sending safe pubKey to remote peer!')
+      console.error('[hyperbeam] Sending safe pubKey to remote peer!', safePubKey)
       utils.sendMsg('key:' + safePubKey + '\n', _beam, process)
 
       setTimeout(() => {
         _beam._predestroy()
         _beam._destroy( () => {
+          console.error('[hyperbeam] Creating new HyperBeam with safe pubKey: ', safePubKey)
           safeBeam = createBeam(safePubKey, true)
         });
       }, 500)
@@ -80,9 +81,10 @@ function createBeam(key, options) {
         let safePubKey = line.split(':')[1]
         console.error('[hyperbeam] Received safe pubKey: ', safePubKey)
         rl.close();
-        _beam._predestroy()
 
         setTimeout(() => {
+          console.error('[hyperbeam] Hypebream predestroy() ')
+          _beam._predestroy()
           _beam._destroy( () => {
             console.error('[hyperbeam] Creating new HyperBeam with safe pubKey: ', safePubKey)
             safeBeam = createBeam(safePubKey, false)

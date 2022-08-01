@@ -30,7 +30,7 @@ const sendMsg = function(msg, beam, process){
   setTimeout( () => {
     beam._write(msg, () => {})
     process.stdin.write(msg)
-  },100)
+  },0)
 }
 
 module.exports = {
