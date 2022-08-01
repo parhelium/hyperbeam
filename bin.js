@@ -12,15 +12,17 @@ if (process.argv.includes('-h') || process.argv.includes('--help')) {
 }
 
 let beam
-let pubKey = utils.getPubKey(process.argv[2]);
+let { pubKey, easyTopic } = utils.getPubKey(process.argv[2])
 
 try {
   beam = new Hyperbeam(pubKey, process.argv.includes('-r'))
-  pubKey = beam.key;
+  pubKey = beam.key
 } catch (e) {
   if (e.constructor.name === 'PassphraseError') {
     console.error(e.message)
-    console.error('(If you are attempting to create a new pipe, do not provide a phrase and hyperbeam will generate one for you.)')
+    console.error(
+      '(If you are attempting to create a new pipe, do not provide a phrase and hyperbeam will generate one for you.)'
+    )
     process.exit(1)
   } else {
     throw e
@@ -41,6 +43,13 @@ beam.on('remote-address', function ({ host, port }) {
 
 beam.on('connected', function () {
   console.error('[hyperbeam] Success! Encrypted tunnel established to remote peer')
+  // if pubKey was generated from passphrase
+  // send new random pubKey for safe communication channel and reconnect
+  if (easyTopic && process.argv.includes('-r')) {
+    // generate new pubKey
+    const safePubKey = utils.toBase32(utils.randomBytes(32))
+    process.stdin.write(safePubKey)
+  }
 })
 
 beam.on('error', function (e) {
@@ -58,7 +67,7 @@ process.once('SIGINT', () => {
   else beam.end()
 })
 
-function closeASAP () {
+function closeASAP() {
   console.error('[hyperbeam] Shutting down beam...')
 
   const timeout = setTimeout(() => process.exit(1), 2000)
