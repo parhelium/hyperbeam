@@ -56,10 +56,13 @@ function createBeam(key, options) {
       console.error('[hyperbeam] Sending safe pubKey to remote peer!')
       utils.sendMsg('key:' + safePubKey + '\n', _beam, process)
 
+
       setTimeout(() => {
-        closeASAP()
-        beam = createBeam(safePubKey, true)
-      }, 500);
+        beam.destroy()
+        beam.on('close', function () {
+          beam = createBeam(safePubKey, false)
+        })
+      }, 1000);
 
     } else if (easyTopic && !process.argv.includes('-r')) {
       console.error('[hyperbeam] Waiting for safe pubKey from peer')
@@ -73,9 +76,12 @@ function createBeam(key, options) {
         console.error('[hyperbeam] Received safe pubKey: ', safePubKey)
 
         setTimeout(() => {
-          closeASAP()
-          beam = createBeam(safePubKey, false)
-        }, 1500);
+          beam.destroy()
+          beam.on('close', function () {
+            beam = createBeam(safePubKey, false)
+          })
+        }, 2000);
+          
       })
     }
   })
