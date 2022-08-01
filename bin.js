@@ -13,10 +13,10 @@ if (process.argv.includes('-h') || process.argv.includes('--help')) {
   process.exit(1)
 }
 
-let beam
+
 let { pubKey, easyTopic } = utils.getPubKey(process.argv[2])
 
-beam = createBeam(pubKey, process.argv.includes('-r'))
+let beam = createBeam(pubKey, process.argv.includes('-r'))
 
 function createBeam(key, options) {
   try {
@@ -88,6 +88,8 @@ function createBeam(key, options) {
     if (!beam.connected) closeASAP()
     else beam.end()
   })
+  
+  return beam
 }
 
 function closeASAP() {
