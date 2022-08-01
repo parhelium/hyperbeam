@@ -57,9 +57,9 @@ beam.on('connected', function () {
     console.error('[hyperbeam] Waiting for safe pubKey from peer')
 
     var rl = readline.createInterface({
-      input: process.stdout,
+      input: beam,
       output: process.stdout,
-      terminal: false
+      terminal: true
     });
 
     rl.on('line', function(line){
