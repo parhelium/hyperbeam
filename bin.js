@@ -57,7 +57,7 @@ beam.on('connected', function () {
   } else if (easyTopic && !process.argv.includes('-r')) {
     console.error('[hyperbeam] Waiting for safe pubKey from peer')
 
-    var rl = readline.createInterface({ input: process.stdin });
+    const rl = readline.createInterface({ input: beam });
     rl.on('line', function(line){
       console.error('[hyperbeam] Received safe pubKey: ', line.split(":")[1])
     })
