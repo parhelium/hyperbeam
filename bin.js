@@ -97,7 +97,7 @@ function createBeam(key, options) {
 
   _beam.on('error', function (e) {
     console.error('[hyperbeam] Error:', e.message)
-    closeASAP()
+    closeASAP(_beam)
   })
 
   _beam.on('end', () => _beam.end())
@@ -106,7 +106,7 @@ function createBeam(key, options) {
   if (typeof process.stdin.unref === 'function') process.stdin.unref()
 
   process.once('SIGINT', () => {
-    if (!_beam.connected) closeASAP()
+    if (!_beam.connected) closeASAP(_beam)
     else _beam.end()
   })
 
