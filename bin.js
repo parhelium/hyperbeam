@@ -111,8 +111,8 @@ function closeASAP(_beam) {
   console.error('[hyperbeam] Shutting down beam...')
 
   const timeout = setTimeout(() => process.exit(1), 2000)
-  _beam.destroy()
-  _beam.on('close', function () {
+  _beam && _beam.destroy()
+  _beam && _beam.on('close', function () {
     clearTimeout(timeout)
   })
 }
