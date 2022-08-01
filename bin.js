@@ -15,7 +15,8 @@ if (process.argv.includes('-h') || process.argv.includes('--help')) {
 
 let { pubKey, easyTopic } = utils.getPubKey(process.argv[2])
 
-let beam = createBeam(pubKey, process.argv.includes('-r'))
+let beam = createBeam(pubKey, process.argv.includes('-r'));
+let safeBeam;
 
 function createBeam(key, options) {
   let _beam
@@ -47,7 +48,6 @@ function createBeam(key, options) {
   })
 
   _beam.on('connected', function () {
-    let safeBeam
     console.error('[hyperbeam] Success! Encrypted tunnel established to remote peer')
     // if pubKey was generated from passphrase
     // send new random pubKey for safe communication channel and reconnect
@@ -59,9 +59,10 @@ function createBeam(key, options) {
 
       
       setTimeout(() => {
+        beam.end();
         beam.destroy()
         beam.on('close', function () {
-          safeBeam  = createBeam(safePubKey, true);
+          safeBeam = createBeam(safePubKey, true);
         })
       }, 500);
 
@@ -77,6 +78,7 @@ function createBeam(key, options) {
         console.error('[hyperbeam] Received safe pubKey: ', safePubKey)
 
         setTimeout(() => {
+          beam.end();
           beam.destroy()
           beam.on('close', function () {
             safeBeam = createBeam(safePubKey, false)
