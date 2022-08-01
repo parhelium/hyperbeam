@@ -86,7 +86,7 @@ function createBeam(key, options) {
             console.error('[hyperbeam] Creating new HyperBeam with safe pubKey: ', safePubKey)
             safeBeam = createBeam(safePubKey, false)
           });
-        }, 2000)
+        }, 2500)
       })
     } else {
       console.error('[hyperbeam] Connected | isServer = ', isServer)
