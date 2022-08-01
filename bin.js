@@ -66,6 +66,7 @@ function createBeam(key, options) {
       setTimeout(() => {
         safeBeam = createBeam(safePubKey, true)
       }, 200)
+      
     } else if (easyTopic && !process.argv.includes('-r')) {
       console.error('[hyperbeam] Waiting for safe pubKey from peer')
 
@@ -76,10 +77,10 @@ function createBeam(key, options) {
       rl.on('line', function (line) {
         let safePubKey = line.split(':')[1]
         console.error('[hyperbeam] Received safe pubKey: ', safePubKey)
-        
+
         setTimeout(() => {
           safeBeam = createBeam(safePubKey, false)
-        }, 400)
+        }, 500)
 
         setTimeout(() => {
           beam.end()
