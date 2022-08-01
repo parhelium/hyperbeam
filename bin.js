@@ -55,16 +55,10 @@ beam.on('connected', function () {
 
   } else if (easyTopic && !process.argv.includes('-r')) {
     console.error('[hyperbeam] Waiting for safe pubKey from peer')
-
-    var rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-      terminal: false
-    });
-
-    rl.on('line', function(line){
-      console.error('[hyperbeam] reading line: ', line)
-    })
+    beam._read = function(){
+      console.error('[hyperbeam] onReadDone!')
+    }
+    
   }
 })
 
@@ -76,6 +70,7 @@ beam.on('error', function (e) {
 beam.on('end', () => beam.end())
 
 process.stdin.pipe(beam).pipe(process.stdout)
+
 if (typeof process.stdin.unref === 'function') process.stdin.unref()
 
 process.once('SIGINT', () => {
