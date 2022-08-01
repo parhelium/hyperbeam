@@ -53,7 +53,7 @@ function createBeam(key, options) {
     // if pubKey was generated from passphrase
     // send new random pubKey for safe communication channel and reconnect
     if (easyTopic && isServer) {
-      easyTopic = false;
+      easyTopic = false
 
       const safePubKey = utils.toBase32(utils.randomBytes(32))
 
@@ -62,14 +62,13 @@ function createBeam(key, options) {
 
       setTimeout(() => {
         _beam._predestroy()
-        _beam._destroy( () => {
+        _beam._destroy(() => {
           console.error('[hyperbeam] Creating new HyperBeam with safe pubKey: ', safePubKey)
           safeBeam = createBeam(safePubKey, true)
-        });
+        })
       }, 200)
-
     } else if (easyTopic && !isServer) {
-      easyTopic = false;
+      easyTopic = false
 
       console.error('[hyperbeam] Waiting for safe pubKey from peer')
 
@@ -80,9 +79,13 @@ function createBeam(key, options) {
       rl.on('line', function (line) {
         let safePubKey = line.split(':')[1]
         console.error('[hyperbeam] Received safe pubKey: ', safePubKey)
-        rl.close();
+        rl.close()
 
         setTimeout(() => {
+          try {
+            _beam._destroy()
+          } catch (e) {}
+
           console.error('[hyperbeam] Creating new HyperBeam with safe pubKey: ', safePubKey)
           safeBeam = createBeam(safePubKey, false)
         }, 1000)
