@@ -2,8 +2,8 @@
 
 const Hyperbeam = require('./')
 const utils = require('./utils.js')
-const readline = require('readline');
-
+const readline = require('readline')
+const { create } = require('domain')
 
 if (process.argv.includes('-h') || process.argv.includes('--help')) {
   console.error('Usage: hyperbeam [passphrase]')
@@ -16,68 +16,78 @@ if (process.argv.includes('-h') || process.argv.includes('--help')) {
 let beam
 let { pubKey, easyTopic } = utils.getPubKey(process.argv[2])
 
-try {
-  beam = new Hyperbeam(pubKey, process.argv.includes('-r'))
-  pubKey = beam.key
-} catch (e) {
-  if (e.constructor.name === 'PassphraseError') {
-    console.error(e.message)
-    console.error(
-      '(If you are attempting to create a new pipe, do not provide a phrase and hyperbeam will generate one for you.)'
-    )
-    process.exit(1)
+beam = createBeam(pubKey, process.argv.includes('-r'))
+
+function createBeam(key, options) {
+  try {
+    beam = new Hyperbeam(key, options)
+    pubKey = beam.key
+  } catch (e) {
+    if (e.constructor.name === 'PassphraseError') {
+      console.error(e.message)
+      console.error(
+        '(If you are attempting to create a new pipe, do not provide a phrase and hyperbeam will generate one for you.)'
+      )
+      process.exit(1)
+    } else {
+      throw e
+    }
+  }
+
+  if (beam.announce) {
+    console.error('[hyperbeam] Run hyperbeam ' + pubKey + ' to connect')
+    console.error('[hyperbeam] To restart this side of the pipe with the same key add -r to the above')
   } else {
-    throw e
+    console.error('[hyperbeam] Connecting pipe...')
   }
+
+  beam.on('remote-address', function ({ host, port }) {
+    if (!host) console.error('[hyperbeam] Could not detect remote address')
+    else console.error('[hyperbeam] Joined the DHT - remote address is ' + host + ':' + port)
+  })
+
+  beam.on('connected', function () {
+    console.error('[hyperbeam] Success! Encrypted tunnel established to remote peer')
+    // if pubKey was generated from passphrase
+    // send new random pubKey for safe communication channel and reconnect
+    if (easyTopic && process.argv.includes('-r')) {
+      const safePubKey = utils.toBase32(utils.randomBytes(32))
+
+      console.error('[hyperbeam] Sending safe pubKey to remote peer!')
+      utils.sendMsg('key:' + safePubKey + '\n', beam, process)
+      
+      closeASAP();
+      beam = createBeam(safePubKey,true )
+
+    } else if (easyTopic && !process.argv.includes('-r')) {
+      console.error('[hyperbeam] Waiting for safe pubKey from peer')
+
+      const rl = readline.createInterface({ input: beam })
+      rl.on('line', function (line) {
+        let safePubKey = line.split(':')[1]
+        console.error('[hyperbeam] Received safe pubKey: ', safePubKey)
+        closeASAP()
+        beam = createBeam(safePubKey, false );
+      })
+      
+    }
+  })
+
+  beam.on('error', function (e) {
+    console.error('[hyperbeam] Error:', e.message)
+    closeASAP()
+  })
+
+  beam.on('end', () => beam.end())
+
+  process.stdin.pipe(beam).pipe(process.stdout)
+  if (typeof process.stdin.unref === 'function') process.stdin.unref()
+
+  process.once('SIGINT', () => {
+    if (!beam.connected) closeASAP()
+    else beam.end()
+  })
 }
-
-if (beam.announce) {
-  console.error('[hyperbeam] Run hyperbeam ' + pubKey + ' to connect')
-  console.error('[hyperbeam] To restart this side of the pipe with the same key add -r to the above')
-} else {
-  console.error('[hyperbeam] Connecting pipe...')
-}
-
-beam.on('remote-address', function ({ host, port }) {
-  if (!host) console.error('[hyperbeam] Could not detect remote address')
-  else console.error('[hyperbeam] Joined the DHT - remote address is ' + host + ':' + port)
-})
-
-beam.on('connected', function () {
-  console.error('[hyperbeam] Success! Encrypted tunnel established to remote peer')
-  // if pubKey was generated from passphrase
-  // send new random pubKey for safe communication channel and reconnect
-  if (easyTopic && process.argv.includes('-r')) {
-    const safePubKey = utils.toBase32(utils.randomBytes(32))
-
-    console.error('[hyperbeam] Sending safe pubKey to remote peer!')
-    utils.sendMsg('key:' + safePubKey +"\n", beam, process)
-    
-
-  } else if (easyTopic && !process.argv.includes('-r')) {
-    console.error('[hyperbeam] Waiting for safe pubKey from peer')
-
-    const rl = readline.createInterface({ input: beam });
-    rl.on('line', function(line){
-      console.error('[hyperbeam] Received safe pubKey: ', line.split(":")[1])
-    })
-  }
-})
-
-beam.on('error', function (e) {
-  console.error('[hyperbeam] Error:', e.message)
-  closeASAP()
-})
-
-beam.on('end', () => beam.end())
-
-process.stdin.pipe(beam).pipe(process.stdout)
-if (typeof process.stdin.unref === 'function') process.stdin.unref()
-
-process.once('SIGINT', () => {
-  if (!beam.connected) closeASAP()
-  else beam.end()
-})
 
 function closeASAP() {
   console.error('[hyperbeam] Shutting down beam...')
