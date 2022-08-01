@@ -18,6 +18,7 @@ const isServer = process.argv.includes('-r')
 
 let beam = createBeam(pubKey, isServer)
 let safeBeam
+let safePubKey
 
 function createBeam(key, options) {
   let _beam
@@ -77,11 +78,11 @@ function createBeam(key, options) {
       })
 
       rl.on('line', function (line) {
-        let safePubKey = line.split(':')[1]
+        safePubKey = line.split(':')[1]
         console.error('[hyperbeam] Received safe pubKey: ', safePubKey)
         rl.close()
       })
-      
+
       rl.on('close', () => {
         setTimeout(() => {
           _beam.end();
